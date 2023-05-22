@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import Card from "./card";
 import './App.css';
 import ReactDOM from "react-dom";
-import albums from './Album.json';
+
 import SearchForm from "./SearchForm";
+import datasource from "./dataSource";
 
 const App = (props) => {
     const [searchPhrase, setSearchPhrase] = useState('');
@@ -12,9 +13,15 @@ const App = (props) => {
         console.log('phrase is ', phrase);
         setSearchPhrase(phrase);
     }
+    let refresh = false;
     useEffect(() => {
-        setAlbumList(albums);
-    },[albumList]);
+        loadAlbums();
+    },[refresh]);
+
+    const loadAlbums = async () => {
+        const response = await datasource.get('/albums');
+        setAlbumList(response.data);
+    };
     const renderedList = () => {
 
         return albumList.map((album) => {
